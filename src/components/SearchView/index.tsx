@@ -8,6 +8,10 @@ import List from '@mui/material/List'
 import ListItemButton from '@mui/material/ListItemButton'
 import InputBase from '@mui/material/InputBase'
 import Typography from '@mui/material/Typography'
+import ExpandLess from '@mui/icons-material/ExpandLess'
+import ListItem from '@mui/material/ListItem'
+import ExpandMore from '@mui/icons-material/ExpandMore'
+import Collapse from '@mui/material/Collapse'
 import { decode } from 'html-entities'
 import LinearProgress from '@mui/material/LinearProgress'
 // @ts-ignore
@@ -44,6 +48,21 @@ export default function SearchView({
 }: SearchModalProps) {
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState(0)
+  const [expandedState, setExpandedState] = useState({})
+
+  const toggleExpand = (_id: string) => {
+    if (expandedState[_id]) {
+      setExpandedState({
+        ...expandedState,
+        [_id]: false
+      })
+    } else {
+      setExpandedState({
+        ...expandedState,
+        [_id]: true
+      })
+    }
+  }
 
   return (
     <div>
@@ -174,90 +193,163 @@ export default function SearchView({
             {!loading &&
               searchResults.map((searchResult, idx) => {
                 return (
-                  <ListItemButton
-                    onClick={() => {
-                      window.open(searchResult._id)
-                      addResultToSearchHistory(searchResult)
-                    }}
-                    key={String(searchResult._id)}
-                    style={{
-                      width: '100%',
-                      borderRadius: '10px',
-                      backgroundColor: selected === idx ? '#92D293' : 'white',
-                      marginTop: '5px',
-                      marginBottom: '5px'
-                    }}
-                    onMouseOver={() => setSelected(idx)}
-                  >
-                    {
-                      <div
+                  <div key={String(searchResult._id)}>
+                    <ListItem
+                      secondaryAction={
+                        searchResult.highlights &&
+                        searchResult.highlights.length > 1 && (
+                          <IconButton
+                            edge='end'
+                            onClick={() => toggleExpand(searchResult._id)}
+                          >
+                            {expandedState[searchResult._id] ? (
+                              <ExpandLess />
+                            ) : (
+                              <ExpandMore />
+                            )}
+                          </IconButton>
+                        )
+                      }
+                      style={{
+                        width: '100%',
+                        borderRadius: '10px',
+                        backgroundColor: selected === idx ? '#92D293' : 'white',
+                        marginTop: '5px',
+                        marginBottom: '5px'
+                      }}
+                    >
+                      <ListItemButton
+                        onClick={() => {
+                          window.open(searchResult._id)
+                          addResultToSearchHistory(searchResult)
+                        }}
+                        onMouseOver={() => setSelected(idx)}
                         style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'space-around',
-                          gap: '5px'
+                          backgroundColor: 'transparent'
                         }}
                       >
-                        {!searchResult.highlights ||
-                          (searchResult.highlights &&
-                            searchResult.highlights.length === 0 && (
-                              <div>
-                                <p
+                        {
+                          <div
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              justifyContent: 'space-around',
+                              gap: '5px'
+                            }}
+                          >
+                            {
+                              // If there are no highlights, we default to showing title as primary and link as secondary
+                            }
+                            {!searchResult.highlights ||
+                              (searchResult.highlights &&
+                                searchResult.highlights.length === 0 && (
+                                  <div>
+                                    <p
+                                      style={{
+                                        color:
+                                          selected === idx ? 'white' : 'black',
+                                        margin: 0,
+                                        fontSize: '.9em'
+                                      }}
+                                    >
+                                      {truncateText(decode(searchResult.title))}
+                                    </p>
+
+                                    <span
+                                      style={{
+                                        color:
+                                          selected === idx ? 'white' : 'gray',
+                                        fontSize: '.75em'
+                                      }}
+                                    >
+                                      {truncateText(searchResult._id, 12, 70)}
+                                    </span>
+                                  </div>
+                                ))}
+                            {
+                              // If there are highlights, we show highlights as primary and title as secondary
+                              // multiple highlights warrants a dropdown
+                            }
+                            {searchResult.highlights &&
+                              searchResult.highlights.length > 0 && // for multiple highlights we only grab one for now -- may add extra feature later
+                              searchResult.highlights
+                                .slice(0, 1)
+                                .map((highlight: { texts: any[] }, i: any) => {
+                                  return (
+                                    <div
+                                      key={searchResult._id + `_highlight_${i}`}
+                                    >
+                                      <HighlightedText
+                                        inFocus={selected === idx}
+                                        textDocs={highlight.texts}
+                                        style={{
+                                          color:
+                                            selected === idx
+                                              ? 'white'
+                                              : 'black',
+                                          margin: 0,
+                                          fontSize: '.9em'
+                                        }}
+                                        truncateBy={25}
+                                      />
+
+                                      <span
+                                        style={{
+                                          color:
+                                            selected === idx ? 'white' : 'gray',
+                                          fontSize: '.75em'
+                                        }}
+                                      >
+                                        {truncateText(
+                                          decode(searchResult.title), 0, 70
+                                        )}
+                                      </span>
+                                    </div>
+                                  )
+                                })}
+                          </div>
+                        }
+                      </ListItemButton>
+                    </ListItem>
+
+                    <Collapse in={expandedState[searchResult._id]}>
+                      {searchResult.highlights &&
+                        searchResult.highlights.length > 1 &&
+                        searchResult.highlights
+                          .slice(1, searchResults.length)
+                          .map((highlight: { texts: any[] }, i: any) => {
+                            return (
+                              <ListItem
+                                key={searchResult._id + `_highlight_${i + 1}`}
+                                style={{
+                                  width: '100%',
+                                  borderRadius: '10px',
+                                  backgroundColor: 'gray',
+                                  marginTop: '5px',
+                                  marginBottom: '5px'
+                                }}
+                                onMouseOver={() => setSelected(idx)}
+                              >
+                                <HighlightedText
+                                  inFocus={selected === idx}
+                                  textDocs={highlight.texts}
                                   style={{
-                                    color: selected === idx ? 'white' : 'black',
+                                    color: 'white',
                                     margin: 0,
                                     fontSize: '.9em'
                                   }}
-                                >
-                                  {truncateText(decode(searchResult.title))}
-                                </p>
-
-                                <span
-                                  style={{
-                                    color: selected === idx ? 'white' : 'gray',
-                                    fontSize: '.75em'
-                                  }}
-                                >
-                                  {truncateText(searchResult._id, 12)}
-                                </span>
-                              </div>
-                            ))}
-                        {searchResult.highlights &&
-                          searchResult.highlights.length > 0 && // for multiple highlights we only grab one for now -- may add extra feature later
-                          searchResult.highlights
-                            .slice(0, 1)
-                            .map((highlight: { texts: any[] }, i: any) => {
-                              return (
-                                <div key={searchResult._id + `_highlight_${i}`}>
-                                  <HighlightedText
-                                    inFocus={selected === idx}
-                                    textDocs={highlight.texts}
-                                    style={{
-                                      color:
-                                        selected === idx ? 'white' : 'black',
-                                      margin: 0,
-                                      fontSize: '.9em'
-                                    }}
-                                  />
-
-                                  <span
-                                    style={{
-                                      color:
-                                        selected === idx ? 'white' : 'gray',
-                                      fontSize: '.75em'
-                                    }}
-                                  >
-                                    {truncateText(decode(searchResult.title))}
-                                  </span>
-                                </div>
-                              )
-                            })}
-                      </div>
-                    }
-                  </ListItemButton>
+                                  truncateBy={30}
+                                />
+                              </ListItem>
+                            )
+                          })}
+                    </Collapse>
+                  </div>
                 )
               })}
-            {!loading && !noResults && <SearchHistory />}
+            {!loading && !noResults && (!query || !query.trim()) && (
+              <SearchHistory />
+            )}
           </List>
           <Typography variant='subtitle1'>
             Powered by{' '}

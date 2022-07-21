@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import SearchView from './components/SearchView'
 import { API } from './api/API'
-import { SearchResult } from './types'
+import { Highlight, SearchResult } from './types'
 
 interface SearchProps {
   id: string
@@ -25,7 +25,7 @@ export default function Search({ id }: SearchProps) {
       setResults([])
     } else {
       const { results } = await api.searchDocs(query)
-      setResults(results ? results : [])
+      setResults(results || [])
     }
   }
 
