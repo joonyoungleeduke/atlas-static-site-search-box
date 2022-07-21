@@ -27,7 +27,7 @@ class Example extends Component {
 ## Example
 
 See the `example` directory and check `example/README.md` to be linked to a cool project using
-this component for a more fleshed out example. 
+this component for a more fleshed out example.
 
 ## Your Realm App
 Your realm app should allow anonymous credentials for user login and have a function

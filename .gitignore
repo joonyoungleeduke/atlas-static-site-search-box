@@ -1,6 +1,7 @@
 # Mix of https://github.com/github/gitignore/blob/main/Node.gitignore and https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
 
 .idea/
+.DS_Store
 
 # Logs
 logs
