@@ -12,6 +12,8 @@ npm install --save atlas-static-site-search-box
 
 ## Usage
 
+**See [Atlas Static Site Search](https://github.com/mongodben/atlas-static-site-search) for detailed instructions on setting up the backend and using this component**.
+
 ```tsx
 import React, { Component } from 'react'
 
@@ -26,8 +28,8 @@ class Example extends Component {
 
 ## Example
 
-See the `example` directory and check `example/README.md` to be linked to a cool project using
-this component for a more fleshed out example. 
+**See [Atlas Static Site Search](https://github.com/mongodben/atlas-static-site-search) for most up-to-date example/demo**.
+`example` directory is more than likely not in sync / may not work.
 
 ## Your Realm App
 Your realm app should allow anonymous credentials for user login and have a function
