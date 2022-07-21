@@ -58,4 +58,4 @@ export interface Documents {
 
 ## License
 
-MIT © [joonyoungleeduke](https://github.com/joonyoungleeduke)
+MIT © [joonyoungleeduke](https://github.com/joonyoungleeduke), [mongodben](https://github.com/mongodben), [MarcusSorealheis](https://github.com/MarcusSorealheis), [nlarew](https://github.com/nlarew), [Shibi-bala](https://github.com/Shibi-bala), who were all part of the project for [MongoDB](https://www.mongodb.com/) Skunkworks 2022 [Atlas Static Site Search](https://github.com/mongodben/atlas-static-site-search) that originally led to creating this component 
