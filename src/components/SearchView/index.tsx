@@ -104,6 +104,7 @@ export default function SearchView({
             }}
             onChange={(e) => handleQueryChange(e)}
             value={query}
+            autoFocus
           />
 
           <List
