@@ -6,6 +6,7 @@ import { truncateText } from '../../utils'
 interface HighLightedTextProps {
   inFocus: boolean
   textDocs: Array<Documents>
+  truncateBy: number
   // other props
   [x: string]: any
 }
@@ -13,6 +14,7 @@ interface HighLightedTextProps {
 export default function HighlightedText({
   inFocus,
   textDocs,
+  truncateBy,
   ...rest
 }: HighLightedTextProps) {
   const textBeforeHighlight = []
@@ -41,7 +43,7 @@ export default function HighlightedText({
 
   return (
     <p {...rest}>
-      {truncateText(decode(textBefore), 0, 30, false)}
+      {truncateText(decode(textBefore), 0, truncateBy, false)}
       {highlightText && (
         <em
           style={{
@@ -53,7 +55,7 @@ export default function HighlightedText({
           {decode(highlightText)}
         </em>
       )}
-      {truncateText(decode(textAfter), 0, 30)}
+      {truncateText(decode(textAfter), 0, truncateBy)}
     </p>
   )
 }
