@@ -49,7 +49,7 @@ export default function Search({ id }: SearchProps) {
 
     const delayFetchResults = setTimeout(() => {
       getNewSearchResults()
-    }, 1500)
+    }, 100)
 
     return () => clearTimeout(delayFetchResults)
   }, [query])
